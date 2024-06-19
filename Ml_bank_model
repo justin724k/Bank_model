@@ -1,0 +1,103 @@
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import accuracy_score, classification_report,confusion_matrix
+from sklearn.model_selection import cross_val_score
+from sklearn.metrics import roc_curve, roc_auc_score
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+file_path = r'C:\Users\justin urena\Downloads\Bank_Personal_Loan_Modelling.csv'
+data = pd.read_csv(file_path)
+data = data.drop(['ID'],axis=1)
+
+
+x = data.drop(columns=['Personal Loan'])  # DataFrame con mis features
+y = data['Personal Loan']  # DataFrame solo con la variable objetivo 'Personal Loan'
+x_dummie = pd.get_dummies(x)
+x.head()
+
+# Modelo de regresion logistica y Ran
+algos = {
+    'Logistic Regression': LogisticRegression(solver='lbfgs', max_iter=1000),
+    'Random Forest': RandomForestClassifier(n_estimators=100, random_state=117)
+}
+
+# División de los datos en entrenamiento y testing
+X_train, X_test, y_train, y_test = train_test_split(x_dummie, y, test_size=0.2, random_state=42)
+
+# Tamaño de los datos de entrenamiento y prueba
+print(f"Tamaño de datos de entrenamiento: {X_train.shape}")
+print(f"Tamaño de datos de prueba: {X_test.shape}")
+
+
+for algo_name, algo in algos.items():
+    # .fit para entrenar el modelo
+    algo.fit(X_train, y_train)
+    
+    #.predict usar la data de testing 
+    y_pred = algo.predict(X_test)
+    
+    # Calcular accuracy 
+    accuracy = accuracy_score(y_test, y_pred)
+    print(f'{algo_name}:')
+    print(f'Precisión: {accuracy:.2f}')
+    
+    # Imprimir reporte de clasificación
+    print(classification_report(y_test, y_pred, zero_division=0))
+    
+    #  matriz de confusión
+    conf_matrix = confusion_matrix(y_test, y_pred)
+    
+    # Mostrar la matriz de confusión
+    plt.figure(figsize=(6, 4))
+    sns.heatmap(conf_matrix, annot=True, cmap='Blues', fmt='g')
+    plt.title(f'Confusion Matrix - {algo_name}')
+    plt.xlabel('Predicion del Modelo')
+    plt.ylabel('True labels')
+    plt.show()
+
+
+# Modelo de regresion logistica y Ran
+algos = {
+    'Logistic Regression': LogisticRegression(solver='lbfgs', max_iter=1000),
+    'Random Forest': RandomForestClassifier(n_estimators=100, random_state=117)
+}
+
+# División de los datos en entrenamiento y testing
+X_train, X_test, y_train, y_test = train_test_split(x_dummie, y, test_size=0.2, random_state=42)
+
+# Tamaño de los datos de entrenamiento y prueba
+print(f"Tamaño de datos de entrenamiento: {X_train.shape}")
+print(f"Tamaño de datos de prueba: {X_test.shape}")
+
+
+for algo_name, algo in algos.items():
+    # .fit para entrenar el modelo
+    algo.fit(X_train, y_train)
+    
+    #.predict usar la data de testing 
+    y_pred = algo.predict(X_test)
+    
+    # Calcular accuracy 
+    accuracy = accuracy_score(y_test, y_pred)
+    print(f'{algo_name}:')
+    print(f'Precisión: {accuracy:.2f}')
+    
+    # Imprimir reporte de clasificación
+    print(classification_report(y_test, y_pred, zero_division=0))
+    
+    #  matriz de confusión
+    conf_matrix = confusion_matrix(y_test, y_pred)
+    
+    # Mostrar la matriz de confusión
+    plt.figure(figsize=(6, 4))
+    sns.heatmap(conf_matrix, annot=True, cmap='Blues', fmt='g')
+    plt.title(f'Confusion Matrix - {algo_name}')
+    plt.xlabel('Predicion del Modelo')
+    plt.ylabel('True labels')
+    plt.show()
